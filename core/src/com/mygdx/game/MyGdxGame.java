@@ -224,9 +224,30 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.end();
 	}
 
+	public void validarPontos(){
+		if (posiçãoCanoHorizontal < 50 - passaros[0].getWidth() ){
+			if (!passsouCano){
+				pontos++;
+				passsouCano = true;
+				somPontuação.play();
+			}
+		}
+
+		variacao += Gdx.graphics.getDeltaTime() * 10;
+
+		if (variacao > 3)
+			variacao = 0;
+
+	}
+
+
 	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
+	public void resize (int width, int height){
+		viewport.update(width, height);
+	}
+
+	@Override
+	public void dispose(){
+
 	}
 }
