@@ -200,7 +200,29 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 		}
 	}
-	//
+	private void desenharTexturas(){
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
+		batch.draw(passaros[(int) variacao],
+				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
+		batch.draw(canoBaixo, posiçãoCanoHorizontal,
+				alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical);
+		textoPontuação.draw(batch, String.valueOf(pontos), larguraDispositivo / 2,
+				alturaDispositivo - 110);
+
+		if (estadoJogo == 2){
+			batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2,
+					alturaDispositivo / 2);
+			textoReiniciar.draw(batch,
+					"Toque para reiniciar!", larguraDispositivo / 2 - 140,
+					alturaDispositivo / 2 - gameOver.getHeight() / 2);
+			textoMelhorPontuação.draw(batch,
+					"Seu recorde é: " + pontuacaoMaxima + " pontos",
+					larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
+		}
+		batch.end();
+	}
 
 	@Override
 	public void dispose () {
