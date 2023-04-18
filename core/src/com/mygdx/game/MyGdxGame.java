@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -30,7 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	private Circle circuloPassaro;
 	private Rectangle retanguloCanoCima;
-	private Rectangle rentaguloCanoBaixo;
+	private Rectangle retanguloCanoBaixo;
 
 	private float larguraDispositivo;
 	private float alturaDispositivo;
@@ -113,7 +114,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		shapeRenderer = new ShapeRenderer();
 		circuloPassaro = new Circle();
-		rentaguloCanoBaixo = new Rectangle();
+		retanguloCanoBaixo = new Rectangle();
 		retanguloCanoCima = new Rectangle();
 
 		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
@@ -170,6 +171,34 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 		}
 
+	}
+	private void detectarColisoes(){
+		circuloPassaro.set(
+				50 + posicaoHorizontalPassaro + passaros[0].getWidth() / 2,
+				posiçãoInicialVerticalPassaro + passaros[0].getHeight() / 2,
+				passaros[0].getWidth() / 2
+		);
+
+		retanguloCanoBaixo.set(
+				posiçãoCanoHorizontal,
+				alturaDispositivo / 2 - canoBaixo.getHeight() - espaçoEntreCanos / 2 + posiçãoCanoVertical,
+				canoBaixo.getWidth(), canoBaixo.getHeight()
+		);
+
+		retanguloCanoCima.set(
+				posiçãoCanoHorizontal, alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical,
+				canoTopo.getWidth(), canoTopo.getHeight()
+		);
+
+		boolean colidiuCanoCima = Intersector.overlaps(circuloPassaro, retanguloCanoCima);
+		boolean colidiuCanoBaixo = Intersector.overlaps(circuloPassaro, retanguloCanoBaixo);
+
+		if (colidiuCanoCima || colidiuCanoBaixo) {
+			if (estadoJogo == 1) {
+				somColisão.play();
+				estadoJogo = 2;
+			}
+		}
 	}
 	//
 
