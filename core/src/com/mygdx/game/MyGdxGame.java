@@ -44,6 +44,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	private int pontos = 0;
 	private int pontuacaoMaxima = 0;
 	private boolean passsouCano = false;
+	private int estadoJogo = 0;
+	private float posicaoHorizontalPassaro = 0;
 
 	BitmapFont textoPontuação;
 	BitmapFont textoReiniciar;
@@ -126,7 +128,51 @@ public class MyGdxGame extends ApplicationAdapter {
 		viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
 
 	}
-	
+
+	private void verificarEstadoJogo(){
+		boolean toqueTela = Gdx.input.justTouched();
+		if (estadoJogo == 0){
+			if (toqueTela){
+				gravidade = -15;
+				estadoJogo = 1;
+				somVoando.play();
+			}
+		}else if( estadoJogo == 1){
+				if (toqueTela){
+					gravidade = -15;
+					somVoando.play();
+				}
+				posiçãoCanoHorizontal -= Gdx.graphics.getDeltaTime() * 200;
+				if (posiçãoCanoHorizontal <  -canoTopo.getWidth()){
+					posiçãoCanoHorizontal = larguraDispositivo;
+					posiçãoCanoVertical = random.nextInt(400) - 200;
+					passsouCano = false;
+				}
+				if (posiçãoInicialVerticalPassaro > 0 || toqueTela)
+					posiçãoInicialVerticalPassaro = posiçãoInicialVerticalPassaro - gravidade;
+				gravidade++;
+
+		}else if(estadoJogo == 2){
+				if (pontos > pontuacaoMaxima){
+					pontuacaoMaxima = pontos;
+					preferencias.putInteger("pontuacaoMaxima", pontuacaoMaxima);
+					preferencias.flush();
+				}
+				posicaoHorizontalPassaro -= Gdx.graphics.getDeltaTime()*500;
+
+				if (toqueTela){
+					estadoJogo = 0;
+					pontos = 0;
+					gravidade = 0;
+					posicaoHorizontalPassaro = 0;
+					posiçãoInicialVerticalPassaro = alturaDispositivo / 2;
+					posiçãoCanoHorizontal = larguraDispositivo;
+				}
+		}
+
+	}
+	//
+
 	@Override
 	public void dispose () {
 		batch.dispose();
