@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Random;
@@ -40,7 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float espaçoEntreCanos;
 	private Random random;
 	private int pontos = 0;
-	private int pontuaçãoMáxima = 0;
+	private int pontuacaoMaxima = 0;
 	private boolean passsouCano = false;
 
 	BitmapFont textoPontuação;
@@ -85,8 +87,45 @@ public class MyGdxGame extends ApplicationAdapter {
 		canoTopo = new Texture("cano_topo_maior.png");
 		gameOver = new Texture("game_over.png");
 	}
+	private void inicializarObjetos(){
+		batch = new SpriteBatch();
+		random = new Random();
 
+		larguraDispositivo = VIRTUAL_WIDTH;
+		alturaDispositivo = VIRTUAL_HEIGHT;
+		posiçãoInicialVerticalPassaro = alturaDispositivo / 2;
+		posiçãoCanoHorizontal = larguraDispositivo;
+		espaçoEntreCanos = 350;
 
+		textoPontuação = new BitmapFont();
+		textoPontuação.setColor(Color.WHITE);
+		textoPontuação.getData().setScale(10);
+
+		textoReiniciar = new BitmapFont();
+		textoReiniciar.setColor(Color.GREEN);
+		textoReiniciar.getData().setScale(2);
+
+		textoMelhorPontuação = new BitmapFont();
+		textoMelhorPontuação.setColor(Color.RED);
+		textoMelhorPontuação.getData().setScale(2);
+
+		shapeRenderer = new ShapeRenderer();
+		circuloPassaro = new Circle();
+		rentaguloCanoBaixo = new Rectangle();
+		retanguloCanoCima = new Rectangle();
+
+		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
+		somColisão = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
+		somPontuação = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
+
+		preferencias = Gdx.app.getPreferences("flappyBird");
+		pontuacaoMaxima = preferencias.getInteger("pontuacaoMaxima", 0);
+
+		camera = new OrthographicCamera();
+		camera.position.set(VIRTUAL_WIDTH/2, VIRTUAL_HEIGHT/2, 0);
+		viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
+
+	}
 	
 	@Override
 	public void dispose () {
