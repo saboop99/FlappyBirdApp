@@ -73,6 +73,20 @@ public class MyGdxGame extends ApplicationAdapter {
 		desenharTexturas();
 		detectarColisoes();
 	}
+
+	private void inicializarTexturas(){
+		passaros = new Texture[3];
+		passaros[0] = new Texture("passaro1.png");
+		passaros[1] = new Texture("passaro2.png");
+		passaros[2] = new Texture("passaro3.png");
+
+		fundo = new Texture("fundo.png");
+		canoBaixo = new Texture("cano_baixo_maior.png");
+		canoTopo = new Texture("cano_topo_maior.png");
+		gameOver = new Texture("game_over.png");
+	}
+
+
 	
 	@Override
 	public void dispose () {
