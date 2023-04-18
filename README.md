@@ -65,11 +65,11 @@ Clique no ícone do jogo e depois de aberto é só jogar
 
 XML
 
+Biblioteca Lib Gdx
+
 ## Resolvendo Problemas
 
 ## Recursos de inseridos 🧰
-
-Biblioteca Lib Gdx
 
 ## Desenvolvedores/Contribuintes:
 
