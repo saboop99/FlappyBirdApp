@@ -132,25 +132,39 @@ public class MyGdxGame extends ApplicationAdapter {
 		//setando o tamanho da BitmapFont
 		textoMelhorPontuação.getData().setScale(2);
 
+		//definição da variavel shapeRenderer
 		shapeRenderer = new ShapeRenderer();
+		//criação de um círculo em volta do pássaro para servir de colisor
 		circuloPassaro = new Circle();
+		//criação de um retângulo em volta do cano de cima para servir de colisor
 		retanguloCanoBaixo = new Rectangle();
+		//criação de um retângulo em volta do cano de baixo para servir de colisor
 		retanguloCanoCima = new Rectangle();
 
+		//definindo o som que sai quando o passaro bate as asas (quando o player toca na tela)
 		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
+		//definindo o som que sai quando o passaro colide com o cano
 		somColisão = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
+		//definindo o som que sai quando o passaro recebe pontos ao passar pelos canos
 		somPontuação = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
 
+		//setando a variável preferencias, e pegando o preferences no Gdx
 		preferencias = Gdx.app.getPreferences("flappyBird");
+		//preferences serve para salvar coisas que não exigem tanta memória, nesse caso a pontuação máxima está sendo salva, e o valor inicial é 0
 		pontuacaoMaxima = preferencias.getInteger("pontuacaoMaxima", 0);
 
+		//adicionando uma camera
 		camera = new OrthographicCamera();
+		//definindo a posição da camera
 		camera.position.set(VIRTUAL_WIDTH/2, VIRTUAL_HEIGHT/2, 0);
+		//definindo o viewport, que vai servir para ajeitar a imagem no dispositivo
 		viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
 
 	}
 
+	//criação do método verificarEstadoJogo, que verifica o estado atual do jogo
 	private void verificarEstadoJogo(){
+		//condicional para caso o jogador toque na tela e o estado do jogo seja 0, o passaro voa e o estado do jogo é definido pra 1
 		boolean toqueTela = Gdx.input.justTouched();
 		if (estadoJogo == 0){
 			if (toqueTela){
@@ -158,29 +172,35 @@ public class MyGdxGame extends ApplicationAdapter {
 				estadoJogo = 1;
 				somVoando.play();
 			}
+			//condicional para caso o jogador toque na tela e o estado do jogo seja 1, o passaro voa
 		}else if( estadoJogo == 1){
 				if (toqueTela){
 					gravidade = -15;
 					somVoando.play();
 				}
+				//operação que definine o surgimento dos canos
 				posiçãoCanoHorizontal -= Gdx.graphics.getDeltaTime() * 200;
 				if (posiçãoCanoHorizontal <  -canoTopo.getWidth()){
 					posiçãoCanoHorizontal = larguraDispositivo;
 					posiçãoCanoVertical = random.nextInt(400) - 200;
 					passsouCano = false;
 				}
+				//condicional para o passaro voar, utilizando sua posição inicial e a gravidade
 				if (posiçãoInicialVerticalPassaro > 0 || toqueTela)
 					posiçãoInicialVerticalPassaro = posiçãoInicialVerticalPassaro - gravidade;
 				gravidade++;
 
+				//condicional para caso o estado do jogo seja 2, mostra a pontuação máxima e salva (caso você tenha feito mais pontos que a sua pontuação máxima
 		}else if(estadoJogo == 2){
 				if (pontos > pontuacaoMaxima){
 					pontuacaoMaxima = pontos;
 					preferencias.putInteger("pontuacaoMaxima", pontuacaoMaxima);
 					preferencias.flush();
 				}
+				//definie a posição horizontal do pássaro
 				posicaoHorizontalPassaro -= Gdx.graphics.getDeltaTime()*500;
 
+				//caso o player toque na tela, deixa tudo igual no inicio
 				if (toqueTela){
 					estadoJogo = 0;
 					pontos = 0;
@@ -192,27 +212,33 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 	}
+	//criação do método detectarColisoes que detecta colisões
 	private void detectarColisoes(){
+		// setando o circulo do passaro (colisor)
 		circuloPassaro.set(
 				50 + posicaoHorizontalPassaro + passaros[0].getWidth() / 2,
 				posiçãoInicialVerticalPassaro + passaros[0].getHeight() / 2,
 				passaros[0].getWidth() / 2
 		);
 
+		//setando o retangulo do cano de baixo (colisor)
 		retanguloCanoBaixo.set(
 				posiçãoCanoHorizontal,
 				alturaDispositivo / 2 - canoBaixo.getHeight() - espaçoEntreCanos / 2 + posiçãoCanoVertical,
 				canoBaixo.getWidth(), canoBaixo.getHeight()
 		);
 
+		//setando o retangulo do cano de cima (colisor)
 		retanguloCanoCima.set(
 				posiçãoCanoHorizontal, alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical,
 				canoTopo.getWidth(), canoTopo.getHeight()
 		);
 
+		//duas variavéis boolean para detectar colisão em cada cano (cima e baixo)
 		boolean colidiuCanoCima = Intersector.overlaps(circuloPassaro, retanguloCanoCima);
 		boolean colidiuCanoBaixo = Intersector.overlaps(circuloPassaro, retanguloCanoBaixo);
 
+		//condicional para caso o passaro colida, ele caia e morra
 		if (colidiuCanoCima || colidiuCanoBaixo) {
 			if (estadoJogo == 1) {
 				somColisão.play();
@@ -220,17 +246,23 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 		}
 	}
+	//criação do metodo desenharTexturas que está definindo todas as texturas do jogo
 	private void desenharTexturas(){
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		//operação para desenhar o fundo no lugar certo
 		batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
+		//operação para desenhar os passaros no lugar certo
 		batch.draw(passaros[(int) variacao],
 				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
+		//operação para desenhar os canos nos lugares certos
 		batch.draw(canoBaixo, posiçãoCanoHorizontal,
 				alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical);
+		//operação do desenho do texto que mostra seus pontos
 		textoPontuação.draw(batch, String.valueOf(pontos), larguraDispositivo / 2,
 				alturaDispositivo - 110);
 
+		//condicional para que caso você perca o jogo, ele te mostre todas as informaçoes propostas (tela de game over, sua melhor pontuação e o "botão" de reiniciar
 		if (estadoJogo == 2){
 			batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2,
 					alturaDispositivo / 2);
@@ -244,7 +276,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.end();
 	}
 
+	//criação do método validarPontos que serve para validar os pontos conseguidos
 	public void validarPontos(){
+		//duas condicionais que servem para confirmar os pontos e adicionar
 		if (posiçãoCanoHorizontal < 50 - passaros[0].getWidth() ){
 			if (!passsouCano){
 				pontos++;
@@ -261,11 +295,13 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 
+	//resize serve para redefinir o viewport do android
 	@Override
 	public void resize (int width, int height){
 		viewport.update(width, height);
 	}
 
+	//descarta
 	@Override
 	public void dispose(){
 
