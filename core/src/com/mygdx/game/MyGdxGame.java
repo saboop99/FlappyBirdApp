@@ -21,6 +21,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
+
+	//declaração de todas as variáveis utilizadas no projeto
 	private SpriteBatch batch;
 	private Texture[] passaros;
 	private Texture fundo;
@@ -62,13 +64,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Viewport viewport;
 	private final float VIRTUAL_WIDTH = 720;
 	private final float VIRTUAL_HEIGHT = 1280;
-	
+
+	//chamando os métodos para inicializar as texturas e os objetos
 	@Override
 	public void create () {
 	inicializarTexturas();
 	inicializarObjetos();
 	}
 
+	//chamando métodos que respectivamente: verifica o estado atual do jogo, valida os pontos que o player fez no jogo, "desenha" as texturas do jogo (cano, passaro etc) e detecta as colisões do passaro com os canos
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -79,6 +83,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		detectarColisoes();
 	}
 
+	//criação do método inicializarTexturas, que inicializa as texturas no jogo (texturas do passaro voando, fundo do mapa, textura dos canos e tela de game over)
 	private void inicializarTexturas(){
 		passaros = new Texture[3];
 		passaros[0] = new Texture("passaro1.png");
@@ -90,26 +95,41 @@ public class MyGdxGame extends ApplicationAdapter {
 		canoTopo = new Texture("cano_topo_maior.png");
 		gameOver = new Texture("game_over.png");
 	}
+	//criação do método inicializarObjetos, que inicializar os "objetos" no jogo (tudo o que é necessário pro jogo rodar)
 	private void inicializarObjetos(){
 		batch = new SpriteBatch();
 		random = new Random();
 
+		//definição da altura da tela do dispositivo
 		larguraDispositivo = VIRTUAL_WIDTH;
+		//definição da  largura da tela do dispositivo
 		alturaDispositivo = VIRTUAL_HEIGHT;
+		//definindo a posição inicial do passaro
 		posiçãoInicialVerticalPassaro = alturaDispositivo / 2;
+		//definindo a posição horizontal do cano
 		posiçãoCanoHorizontal = larguraDispositivo;
+		//definindo a distância entre os canos
 		espaçoEntreCanos = 350;
 
+		//adicionando uma nova BitmapFont para o texto que mostra a pontuação do jogador
 		textoPontuação = new BitmapFont();
+		//setando a cor da BitmapFont
 		textoPontuação.setColor(Color.WHITE);
+		//setando o tamanho da BitmapFont
 		textoPontuação.getData().setScale(10);
 
+		//adicionando uma nova BitmapFont para o texto que mostra o "reiniciar" para o jogador
 		textoReiniciar = new BitmapFont();
+		//setando a cor da BitmapFont
 		textoReiniciar.setColor(Color.GREEN);
+		//setando o tamanho da BitmapFont
 		textoReiniciar.getData().setScale(2);
 
+		//adicionando uma nova BitmapFont para o texto que mostra a melhor pontuação do jogador
 		textoMelhorPontuação = new BitmapFont();
+		//setando a cor da BitmapFont
 		textoMelhorPontuação.setColor(Color.RED);
+		//setando o tamanho da BitmapFont
 		textoMelhorPontuação.getData().setScale(2);
 
 		shapeRenderer = new ShapeRenderer();
