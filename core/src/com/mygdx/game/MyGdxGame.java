@@ -257,7 +257,9 @@ public class MyGdxGame extends ApplicationAdapter {
 				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
 		//operação para desenhar os canos nos lugares certos
 		batch.draw(canoBaixo, posiçãoCanoHorizontal,
-				alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical);
+				alturaDispositivo / 2 -canoBaixo.getHeight() - espaçoEntreCanos/2 + posiçãoCanoVertical);
+		batch.draw(canoTopo, posiçãoCanoHorizontal, alturaDispositivo / 2 + espaçoEntreCanos / 2 + posiçãoCanoVertical);
+
 		//operação do desenho do texto que mostra seus pontos
 		textoPontuação.draw(batch, String.valueOf(pontos), larguraDispositivo / 2,
 				alturaDispositivo - 110);
