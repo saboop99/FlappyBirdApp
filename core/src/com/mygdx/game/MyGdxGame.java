@@ -22,6 +22,7 @@ import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
 
+	//teste
 	//declaração de todas as variáveis utilizadas no projeto
 	private SpriteBatch batch;
 	private Texture[] passaros;
