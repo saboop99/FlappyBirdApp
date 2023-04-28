@@ -25,7 +25,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	//teste
 	//declaração de todas as variáveis utilizadas no projeto
 	private SpriteBatch batch;
-	private Texture[] passaros;
+	private Texture[] porcos;
 	private Texture fundo;
 	private Texture canoBaixo;
 	private Texture canoTopo;
@@ -86,10 +86,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	//criação do método inicializarTexturas, que inicializa as texturas no jogo (texturas do passaro voando, fundo do mapa, textura dos canos e tela de game over)
 	private void inicializarTexturas(){
-		passaros = new Texture[3];
-		passaros[0] = new Texture("passaro1.png");
-		passaros[1] = new Texture("passaro2.png");
-		passaros[2] = new Texture("passaro3.png");
+		porcos = new Texture[3];
+		porcos[0] = new Texture("pig1.png");
+		porcos[1] = new Texture("pig2.png");
+		porcos[2] = new Texture("pig3.png");
 
 		fundo = new Texture("fundo.png");
 		canoBaixo = new Texture("cano_baixo_maior.png");
@@ -217,9 +217,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	private void detectarColisoes(){
 		// setando o circulo do passaro (colisor)
 		circuloPassaro.set(
-				50 + posicaoHorizontalPassaro + passaros[0].getWidth() / 2,
-				posiçãoInicialVerticalPassaro + passaros[0].getHeight() / 2,
-				passaros[0].getWidth() / 2
+				50 + posicaoHorizontalPassaro + porcos[0].getWidth() / 2,
+				posiçãoInicialVerticalPassaro + porcos[0].getHeight() / 2,
+				porcos[0].getWidth() / 2
 		);
 
 		//setando o retangulo do cano de baixo (colisor)
@@ -254,7 +254,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//operação para desenhar o fundo no lugar certo
 		batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
 		//operação para desenhar os passaros no lugar certo
-		batch.draw(passaros[(int) variacao],
+		batch.draw(porcos[(int) variacao],
 				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
 		//operação para desenhar os canos nos lugares certos
 		batch.draw(canoBaixo, posiçãoCanoHorizontal,
@@ -282,7 +282,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	//criação do método validarPontos que serve para validar os pontos conseguidos
 	public void validarPontos(){
 		//duas condicionais que servem para confirmar os pontos e adicionar
-		if (posiçãoCanoHorizontal < 50 - passaros[0].getWidth() ){
+		if (posiçãoCanoHorizontal < 50 - porcos[0].getWidth() ){
 			if (!passsouCano){
 				pontos++;
 				passsouCano = true;
