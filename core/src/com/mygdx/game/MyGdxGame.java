@@ -96,7 +96,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		canoBaixo = new Texture("cano_baixo_maior.png");
 		canoTopo = new Texture("cano_topo_maior.png");
 		gameOver = new Texture("game_over.png");
-		logoStart = new Texture("oincpig");
+		logoStart = new Texture("oincpig.png");
 	}
 	//criação do método inicializarObjetos, que inicializar os "objetos" no jogo (tudo o que é necessário pro jogo rodar)
 	private void inicializarObjetos(){
