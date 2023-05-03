@@ -30,6 +30,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Texture canoBaixo;
 	private Texture canoTopo;
 	private Texture gameOver;
+	private Texture logoStart;
 
 	private ShapeRenderer shapeRenderer;
 	private Circle circuloPassaro;
@@ -95,6 +96,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		canoBaixo = new Texture("cano_baixo_maior.png");
 		canoTopo = new Texture("cano_topo_maior.png");
 		gameOver = new Texture("game_over.png");
+		logoStart = new Texture("oincpig");
 	}
 	//criação do método inicializarObjetos, que inicializar os "objetos" no jogo (tudo o que é necessário pro jogo rodar)
 	private void inicializarObjetos(){
@@ -253,7 +255,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		//operação para desenhar o fundo no lugar certo
 		batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
-		//operação para desenhar os passaros no lugar certo
+		//operação para desenhar os porcos no lugar certo
 		batch.draw(porcos[(int) variacao],
 				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
 		//operação para desenhar os canos nos lugares certos
@@ -265,6 +267,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		textoPontuação.draw(batch, String.valueOf(pontos), larguraDispositivo / 2,
 				alturaDispositivo - 110);
 
+
+
 		//condicional para que caso você perca o jogo, ele te mostre todas as informaçoes propostas (tela de game over, sua melhor pontuação e o "botão" de reiniciar
 		if (estadoJogo == 2){
 			batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2,
@@ -275,6 +279,11 @@ public class MyGdxGame extends ApplicationAdapter {
 			textoMelhorPontuação.draw(batch,
 					"Seu recorde é: " + pontuacaoMaxima + " pontos",
 					larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
+		}
+
+		if (estadoJogo == 0){
+			batch.draw(logoStart, larguraDispositivo / 2 - gameOver.getWidth() / 2,
+					alturaDispositivo / 2);
 		}
 		batch.end();
 	}
