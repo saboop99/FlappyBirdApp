@@ -31,9 +31,13 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Texture canoTopo;
 	private Texture gameOver;
 	private Texture logoStart;
+	private Texture birdGoldCoin;
+	private Texture birdSilverCoin;
+	private Texture showBirdG;
 
 	private ShapeRenderer shapeRenderer;
-	private Circle circuloPassaro;
+	private Circle circuloPorco;
+	private Circle colliderCoin;
 	private Rectangle retanguloCanoCima;
 	private Rectangle retanguloCanoBaixo;
 
@@ -44,9 +48,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float posiçãoInicialVerticalPassaro = 0;
 	private float posiçãoCanoHorizontal;
 	private float posiçãoCanoVertical;
+	private float horizontalGoldCoin;
+	private float horizontalSilveCoin;
+	private float verticalGoldCoin;
+	private float verticalSilverCoin;
 	private float espaçoEntreCanos;
 	private Random random;
 	private int pontos = 0;
+	private int silverCoin = 5;
+	private int goldCoin = 10;
 	private int pontuacaoMaxima = 0;
 	private boolean passsouCano = false;
 	private int estadoJogo = 0;
@@ -59,6 +69,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	Sound somVoando;
 	Sound somColisão;
 	Sound somPontuação;
+	Sound coinPru;
 
 	Preferences preferencias;
 
@@ -85,7 +96,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		detectarColisoes();
 	}
 
-	//criação do método inicializarTexturas, que inicializa as texturas no jogo (texturas do passaro voando, fundo do mapa, textura dos canos e tela de game over)
+	//criação do método inicializarTexturas, que inicializa as texturas no jogo (texturas do porco, fundo do mapa, textura dos canos, tela de game over e a tela de start)
 	private void inicializarTexturas(){
 		porcos = new Texture[3];
 		porcos[0] = new Texture("pig1.png");
@@ -97,6 +108,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		canoTopo = new Texture("cano_topo_maior.png");
 		gameOver = new Texture("game_over.png");
 		logoStart = new Texture("oincpig.png");
+		birdGoldCoin = new Texture("passaro2.png");
+		//birdSilverCoin = new Texture("");
+		showBirdG = birdGoldCoin;
 	}
 	//criação do método inicializarObjetos, que inicializar os "objetos" no jogo (tudo o que é necessário pro jogo rodar)
 	private void inicializarObjetos(){
@@ -113,6 +127,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		posiçãoCanoHorizontal = larguraDispositivo;
 		//definindo a distância entre os canos
 		espaçoEntreCanos = 350;
+		//definindo a posição horizontal da moeda dourada
+		horizontalGoldCoin = larguraDispositivo / 2;
+		//
+		verticalGoldCoin = horizontalGoldCoin + larguraDispositivo / 2;
 
 		//adicionando uma nova BitmapFont para o texto que mostra a pontuação do jogador
 		textoPontuação = new BitmapFont();
@@ -138,11 +156,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		//definição da variavel shapeRenderer
 		shapeRenderer = new ShapeRenderer();
 		//criação de um círculo em volta do pássaro para servir de colisor
-		circuloPassaro = new Circle();
+		circuloPorco = new Circle();
 		//criação de um retângulo em volta do cano de cima para servir de colisor
 		retanguloCanoBaixo = new Rectangle();
 		//criação de um retângulo em volta do cano de baixo para servir de colisor
 		retanguloCanoCima = new Rectangle();
+		//criação de um círculo para servir como colisor para a moeda
+		colliderCoin = new Circle();
 
 		//definindo o som que sai quando o passaro bate as asas (quando o player toca na tela)
 		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
@@ -150,6 +170,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		somColisão = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
 		//definindo o som que sai quando o passaro recebe pontos ao passar pelos canos
 		somPontuação = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
+		//definindo o som que quando coleta moedas
+		coinPru = Gdx.audio.newSound(Gdx.files.internal("Pigeon.wav"));
 
 		//setando a variável preferencias, e pegando o preferences no Gdx
 		preferencias = Gdx.app.getPreferences("flappyBird");
@@ -181,12 +203,18 @@ public class MyGdxGame extends ApplicationAdapter {
 					gravidade = -15;
 					somVoando.play();
 				}
+				//operação que define o surgimento das moedas douradas
+				horizontalGoldCoin -= Gdx.graphics.getDeltaTime() * 200;
 				//operação que definine o surgimento dos canos
 				posiçãoCanoHorizontal -= Gdx.graphics.getDeltaTime() * 200;
 				if (posiçãoCanoHorizontal <  -canoTopo.getWidth()){
 					posiçãoCanoHorizontal = larguraDispositivo;
 					posiçãoCanoVertical = random.nextInt(400) - 200;
 					passsouCano = false;
+				}
+
+				if (horizontalGoldCoin <- showBirdG.getWidth() / 2){
+					coinReset();
 				}
 				//condicional para o passaro voar, utilizando sua posição inicial e a gravidade
 				if (posiçãoInicialVerticalPassaro > 0 || toqueTela)
@@ -211,6 +239,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					posicaoHorizontalPassaro = 0;
 					posiçãoInicialVerticalPassaro = alturaDispositivo / 2;
 					posiçãoCanoHorizontal = larguraDispositivo;
+					coinReset();
 				}
 		}
 
@@ -218,7 +247,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	//criação do método detectarColisoes que detecta colisões
 	private void detectarColisoes(){
 		// setando o circulo do passaro (colisor)
-		circuloPassaro.set(
+		circuloPorco.set(
 				50 + posicaoHorizontalPassaro + porcos[0].getWidth() / 2,
 				posiçãoInicialVerticalPassaro + porcos[0].getHeight() / 2,
 				porcos[0].getWidth() / 2
@@ -237,9 +266,30 @@ public class MyGdxGame extends ApplicationAdapter {
 				canoTopo.getWidth(), canoTopo.getHeight()
 		);
 
+		colliderCoin.set(
+				horizontalGoldCoin - (showBirdG.getWidth()),
+				verticalGoldCoin - (showBirdG.getHeight()),
+				showBirdG.getWidth() / 2
+		);
+
 		//duas variavéis boolean para detectar colisão em cada cano (cima e baixo)
-		boolean colidiuCanoCima = Intersector.overlaps(circuloPassaro, retanguloCanoCima);
-		boolean colidiuCanoBaixo = Intersector.overlaps(circuloPassaro, retanguloCanoBaixo);
+		boolean colidiuCanoCima = Intersector.overlaps(circuloPorco, retanguloCanoCima);
+		boolean colidiuCanoBaixo = Intersector.overlaps(circuloPorco, retanguloCanoBaixo);
+		//variável boolean para detectar colisão entre player e moeda
+		boolean colidiuBirdCoin = Intersector.overlaps(circuloPorco, colliderCoin);
+
+		if(colidiuBirdCoin == true){
+			if (showBirdG == birdGoldCoin){
+				pontos += goldCoin;
+
+				verticalGoldCoin = alturaDispositivo * 2;
+
+			}
+			else
+			{
+				pontos += silverCoin;
+			}
+		}
 
 		//condicional para caso o passaro colida, ele caia e morra
 		if (colidiuCanoCima || colidiuCanoBaixo) {
@@ -281,9 +331,17 @@ public class MyGdxGame extends ApplicationAdapter {
 					larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
 		}
 
+		//condicional para caso o estado do jogo seja 0, ou seja, o estado inicial, mostrar uma tela de start
 		if (estadoJogo == 0){
 			batch.draw(logoStart, larguraDispositivo / 2 - gameOver.getWidth() / 2,
 					alturaDispositivo / 2);
+		}
+
+		//condicional para desenhar as moedas caso o estado do jogo for 1
+		if (estadoJogo == 1){
+			batch.draw(showBirdG, horizontalGoldCoin - (showBirdG.getWidth()),
+					verticalGoldCoin -(showBirdG.getWidth()), showBirdG.getWidth(),
+					showBirdG.getHeight());
 		}
 		batch.end();
 	}
@@ -304,6 +362,24 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (variacao > 3)
 			variacao = 0;
 
+	}
+
+	//criação de um método que serve para "resetar" as moedas
+	private void coinReset(){
+		horizontalGoldCoin = posiçãoCanoHorizontal + canoBaixo.getWidth() + showBirdG.getWidth() +
+				random.nextInt((int)(larguraDispositivo - (showBirdG.getWidth())));
+		verticalGoldCoin = showBirdG.getHeight() / 2 +
+				random.nextInt((int)alturaDispositivo - showBirdG.getHeight() / 2);
+
+		int randomCoin = random.nextInt(100);
+		if (randomCoin < 30)
+		{
+			showBirdG = birdGoldCoin;
+		}
+		else
+		{
+			showBirdG = birdSilverCoin;
+		}
 	}
 
 
