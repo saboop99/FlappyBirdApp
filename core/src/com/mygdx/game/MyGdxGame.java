@@ -123,7 +123,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//definindo a posição horizontal do cano
 		posiçãoCanoHorizontal = larguraDispositivo;
 		//definindo a distância entre os canos
-		espaçoEntreCanos = 350;
+		espaçoEntreCanos = 300;
 		//definindo a posição horizontal da moeda
 		horizontalCoin = larguraDispositivo / 2;
 		//definindo a posição vertical da moeda
@@ -298,6 +298,11 @@ public class MyGdxGame extends ApplicationAdapter {
 				somColisão.play();
 				estadoJogo = 2;
 			}
+		}
+
+		//condicional para caso o player faça 20 ou mais pontos, o espaço entre os canos diminuia, deixando o jogo mais difícil
+		if (pontos >= 20){
+			espaçoEntreCanos = 210;
 		}
 	}
 	//criação do metodo desenharTexturas que está definindo todas as texturas do jogo
