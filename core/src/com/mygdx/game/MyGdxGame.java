@@ -48,10 +48,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float posiçãoInicialVerticalPassaro = 0;
 	private float posiçãoCanoHorizontal;
 	private float posiçãoCanoVertical;
-	private float horizontalGoldCoin;
-	private float horizontalSilveCoin;
-	private float verticalGoldCoin;
-	private float verticalSilverCoin;
+	private float horizontalCoin;
+	private float verticalCoin;
 	private float espaçoEntreCanos;
 	private Random random;
 	private int pontos = 0;
@@ -109,7 +107,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		gameOver = new Texture("game_over.png");
 		logoStart = new Texture("oincpig.png");
 		birdGoldCoin = new Texture("passaro2.png");
-		//birdSilverCoin = new Texture("");
+		birdSilverCoin = new Texture("flappyBlue.png");
 		showBirdG = birdGoldCoin;
 	}
 	//criação do método inicializarObjetos, que inicializar os "objetos" no jogo (tudo o que é necessário pro jogo rodar)
@@ -128,9 +126,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		//definindo a distância entre os canos
 		espaçoEntreCanos = 350;
 		//definindo a posição horizontal da moeda dourada
-		horizontalGoldCoin = larguraDispositivo / 2;
+		horizontalCoin = larguraDispositivo / 2;
 		//
-		verticalGoldCoin = horizontalGoldCoin + larguraDispositivo / 2;
+		verticalCoin = posiçãoCanoHorizontal + larguraDispositivo / 2;
 
 		//adicionando uma nova BitmapFont para o texto que mostra a pontuação do jogador
 		textoPontuação = new BitmapFont();
@@ -165,7 +163,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		colliderCoin = new Circle();
 
 		//definindo o som que sai quando o passaro bate as asas (quando o player toca na tela)
-		somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
+		somVoando = Gdx.audio.newSound(Gdx.files.internal("Oinc.wav"));
 		//definindo o som que sai quando o passaro colide com o cano
 		somColisão = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
 		//definindo o som que sai quando o passaro recebe pontos ao passar pelos canos
@@ -204,7 +202,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					somVoando.play();
 				}
 				//operação que define o surgimento das moedas douradas
-				horizontalGoldCoin -= Gdx.graphics.getDeltaTime() * 200;
+			     horizontalCoin -= Gdx.graphics.getDeltaTime() * 200;
 				//operação que definine o surgimento dos canos
 				posiçãoCanoHorizontal -= Gdx.graphics.getDeltaTime() * 200;
 				if (posiçãoCanoHorizontal <  -canoTopo.getWidth()){
@@ -213,7 +211,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					passsouCano = false;
 				}
 
-				if (horizontalGoldCoin <- showBirdG.getWidth() / 2){
+				if (horizontalCoin <- showBirdG.getWidth() / 2){
 					coinReset();
 				}
 				//condicional para o passaro voar, utilizando sua posição inicial e a gravidade
@@ -267,8 +265,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		);
 
 		colliderCoin.set(
-				horizontalGoldCoin - (showBirdG.getWidth()),
-				verticalGoldCoin - (showBirdG.getHeight()),
+				horizontalCoin - (showBirdG.getWidth()),
+				verticalCoin - (showBirdG.getHeight()),
 				showBirdG.getWidth() / 2
 		);
 
@@ -282,13 +280,15 @@ public class MyGdxGame extends ApplicationAdapter {
 			if (showBirdG == birdGoldCoin){
 				pontos += goldCoin;
 
-				verticalGoldCoin = alturaDispositivo * 2;
+				//verticalCoin = alturaDispositivo * 2;
 
 			}
 			else
 			{
 				pontos += silverCoin;
 			}
+			verticalCoin = alturaDispositivo * 2;
+			coinPru.play();
 		}
 
 		//condicional para caso o passaro colida, ele caia e morra
@@ -305,9 +305,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 		//operação para desenhar o fundo no lugar certo
 		batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
+
 		//operação para desenhar os porcos no lugar certo
 		batch.draw(porcos[(int) variacao],
 				50 + posicaoHorizontalPassaro, posiçãoInicialVerticalPassaro);
+
 		//operação para desenhar os canos nos lugares certos
 		batch.draw(canoBaixo, posiçãoCanoHorizontal,
 				alturaDispositivo / 2 -canoBaixo.getHeight() - espaçoEntreCanos/2 + posiçãoCanoVertical);
@@ -317,7 +319,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		textoPontuação.draw(batch, String.valueOf(pontos), larguraDispositivo / 2,
 				alturaDispositivo - 110);
 
-
+        //condicional para caso o estado do jogo seja 0, ou seja, o estado inicial, mostrar uma tela de start
+		if (estadoJogo == 0){
+			batch.draw(logoStart, larguraDispositivo / 2 - gameOver.getWidth() / 2,
+					alturaDispositivo / 2);
+		}
 
 		//condicional para que caso você perca o jogo, ele te mostre todas as informaçoes propostas (tela de game over, sua melhor pontuação e o "botão" de reiniciar
 		if (estadoJogo == 2){
@@ -331,18 +337,16 @@ public class MyGdxGame extends ApplicationAdapter {
 					larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
 		}
 
-		//condicional para caso o estado do jogo seja 0, ou seja, o estado inicial, mostrar uma tela de start
-		if (estadoJogo == 0){
-			batch.draw(logoStart, larguraDispositivo / 2 - gameOver.getWidth() / 2,
-					alturaDispositivo / 2);
-		}
-
 		//condicional para desenhar as moedas caso o estado do jogo for 1
 		if (estadoJogo == 1){
-			batch.draw(showBirdG, horizontalGoldCoin - (showBirdG.getWidth()),
-					verticalGoldCoin -(showBirdG.getWidth()), showBirdG.getWidth(),
+			batch.draw(showBirdG, horizontalCoin - (showBirdG.getWidth()),
+					verticalCoin -(showBirdG.getWidth()), showBirdG.getWidth(),
 					showBirdG.getHeight());
 		}
+
+
+
+
 		batch.end();
 	}
 
@@ -366,9 +370,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	//criação de um método que serve para "resetar" as moedas
 	private void coinReset(){
-		horizontalGoldCoin = posiçãoCanoHorizontal + canoBaixo.getWidth() + showBirdG.getWidth() +
+		horizontalCoin = posiçãoCanoHorizontal + canoBaixo.getWidth() + showBirdG.getWidth() +
 				random.nextInt((int)(larguraDispositivo - (showBirdG.getWidth())));
-		verticalGoldCoin = showBirdG.getHeight() / 2 +
+		verticalCoin = showBirdG.getHeight() / 2 +
 				random.nextInt((int)alturaDispositivo - showBirdG.getHeight() / 2);
 
 		int randomCoin = random.nextInt(100);
