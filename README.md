@@ -38,9 +38,13 @@ Jogo desenvolvido que tem como base o famoso Flappy Bird, que fez muito sucesso 
 ## Funcionalidades ⚙️:
 ✔️ Encostou no cano: morre
 
-✔️ Passou do cano: pontos
+✔️ Passou do cano: 1 ponto
 
-✔️ Clicou na tela: passarinho "voa"
+✔️ Pegou moeda de ouro: 10 pontos
+
+✔️ Pegou moeda de prata: 5 pontos
+
+✔️ Clicou na tela: porco "voa"
 
 ## Distribuição
 https://github.com/saboop99/FlappyBirdApp
