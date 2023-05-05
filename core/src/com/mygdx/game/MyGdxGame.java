@@ -241,6 +241,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					posicaoHorizontalPassaro = 0;
 					posiçãoInicialVerticalPassaro = alturaDispositivo / 2;
 					posiçãoCanoHorizontal = larguraDispositivo;
+					espaçoEntreCanos = 300;
 					coinReset();
 				}
 		}
