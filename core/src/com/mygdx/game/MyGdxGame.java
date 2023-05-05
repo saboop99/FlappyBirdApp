@@ -219,6 +219,10 @@ public class MyGdxGame extends ApplicationAdapter {
 					posiçãoInicialVerticalPassaro = posiçãoInicialVerticalPassaro - gravidade;
 				gravidade++;
 
+			if (posiçãoInicialVerticalPassaro < 0 || posiçãoInicialVerticalPassaro > alturaDispositivo) {
+				estadoJogo = 2;
+			}
+
 				//condicional para caso o estado do jogo seja 2, mostra a pontuação máxima e salva (caso você tenha feito mais pontos que a sua pontuação máxima
 		}else if(estadoJogo == 2){
 				if (pontos > pontuacaoMaxima){
